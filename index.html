@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Paradise</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-pizza-slice"></i>
+                <P>Pizza Paradise<a href="/img/pizza-store logo.jpeg" alt="pizza paradise"></a></P>
+                </a>
+            </div>
+            <button class="close-btn" id="closeSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="sidebar-content">
+            <div class="nav-section">
+                <h3 class="section-title">Navigation</h3>
+                <ul class="nav-links">
+                    <li><a href="#menu"><i class="fas fa-home" class="content"></i> Home</a></li>
+                    <li><a href="#menu"><i class="fas fa-pizza-slice" class="content"></i> Menu</a></li>
+                    <li><a href="#about"><i class="fas fa-info-circle"></i> About Us</a></li>
+                    <li><a href="#contact"><i class="fas fa-phone" ></i> Contact</a></li>
+                    <li><a href="#location"><i class="fas fa-map-marker-alt"></i> Locations</a></li>
+                    <li><a href="#hours"><i class="fas fa-clock"></i> Hours</a></li>
+                    <li><a href="#login"><i class="fas fa-user"></i> Login</a></li>
+                    <li><a href="#signup"><i class="fas fa-user-plus"></i> Sign Up</a></li>
+                </ul>
+            </div>
+            <div class="cart-section">
+                <h3 class="section-title">Your Cart</h3>
+                <div id="cartItems">
+                    <!-- Cart items will be added here dynamically -->
+                    <div class="empty-cart" id="emptyCart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Your cart is empty</p>
+                        <p>Add some delicious pizzas!</p>
+                    </div>
+                </div>
+                <div class="cart-total" id="cartTotalSection" style="display: none;">
+                    <span class="cart-total-label">Total:</span>
+                    <span class="cart-total-value" id="cartTotal">RM1314520.00</span>
+                </div>
+                <button class="checkout-btn" id="checkoutBtn" style="display: none;">Proceed to Checkout</button>
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const checkoutBtn = document.getElementById('checkoutBtn');
+                    if (checkoutBtn) {
+                        checkoutBtn.addEventListener('click', function(e) {
+                            const confirmed = confirm('Are you sure you want to confirm your order?');
+                            if (confirmed) {
+                                // Example: Get cart data from your cart system
+                                // Replace this with your actual cart data retrieval
+                                const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+                                const totalPrice = parseFloat(document.getElementById('cartTotal').textContent.replace('RM','')) || 0;
+
+                                // Prepare data to send
+                                const items = cartItems.map(item => `${item.name} x${item.quantity}`).join(', ');
+
+                                // Send data to PHP
+                                fetch('save_order.php', {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                                    body: `items=${encodeURIComponent(items)}&total_price=${encodeURIComponent(totalPrice)}`
+                                })
+                                .then(response => response.text())
+                                .then(data => {
+                                if (data.trim() === "success") {
+                                    alert('Thank you for your order!');
+                                    localStorage.removeItem('cartItems'); // Clear the cart
+                                    // Optionally update cart display here, e.g.:
+                                    // updateCart();
+                                }
+                                });
+                            }
+                        });
+                    }
+                });
+                </script>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Toggle Button -->
+    <button class="toggle-btn" id="toggleSidebar">
+        <i class="fas fa-bars"></i>
+        <span>Menu</span>
+    </button>
+
+    
+
+    </section>
+    <!-- Main Content -->
+    <section id="menu" class="content">
+    <div class="main-content" id="mainContent">
+        <h1 style="margin-bottom: 30px; color: #2c3e50;">Our Delicious Pizzas</h1>
+        
+        <div class="pizza-card">
+            <img src="./img/Magherita.jpeg" alt="Margherita Pizza" class="pizza-img">
+            <div class="pizza-info">
+                <h2 class="pizza-title">Margherita</h2>
+                <p class="pizza-description">Classic pizza with tomato sauce, mozzarella, and fresh basil</p>
+                <div class="pizza-price">RM604</div>
+                <button class="add-to-cart" data-id="1" data-name="Margherita" data-price="604">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+        
+        <div class="pizza-card">
+            <img src="./img/pepperoni.jpeg" alt="Pepperoni Pizza" class="pizza-img">
+            <div class="pizza-info">
+                <h2 class="pizza-title">Pepperoni</h2>
+                <p class="pizza-description">Tomato sauce, mozzarella, and spicy pepperoni slices</p>
+                <div class="pizza-price">RM831</div>
+                <button class="add-to-cart" data-id="2" data-name="Pepperoni" data-price="831">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+        
+        <div class="pizza-card">
+            <img src="./img/veggie.jpeg" alt="Veggie Pizza" class="pizza-img">
+            <div class="pizza-info">
+                <h2 class="pizza-title">Veggie</h2>
+                <p class="pizza-description">Tomato sauce, mozzarella, bell peppers, mushrooms, and olives</p>
+                <div class="pizza-price">RM1145.14</div>
+                <button class="add-to-cart" data-id="3" data-name="Veggie" data-price="1145.14">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+    </section>
+    <script>
+    // Add to Cart functionality
+    document.querySelectorAll('.add-to-cart').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const id = btn.getAttribute('data-id');
+            const name = btn.getAttribute('data-name');
+            const price = parseFloat(btn.getAttribute('data-price'));
+            let cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+            let found = cartItems.find(item => item.id == id);
+            if (found) {
+                found.quantity += 1;
+            } else {
+                cartItems.push({id, name, price, quantity: 1});
+            }
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            alert(name + " added to cart!");
+            // Optionally update cart display here
+        });
+    });
+    </script>
+
+    <!-- About Us Section -->
+    <section class="about-section content" id="about">
+        <div class="section-header">
+            <h2>About Us</h2>
+            <p>Our story and commitment to quality</p>
+        </div>
+        <div class="about-content">
+            <div class="about-image">
+                <img src="https://picsum.photos/seed/pizzashop/600/400.jpg" alt="Our Pizza Shop">
+            </div>
+            <div class="about-text">
+                <h3>Our Story</h3>
+                <p>Founded in 2010, Pizza Paradise has been serving the community with authentic, handcrafted pizzas made from the finest ingredients. Our passion for quality and authentic Italian flavors drives everything we do.</p>
+                <p>We source local ingredients whenever possible and use traditional techniques to create pizzas that transport you straight to Italy with every bite.</p>
+                <h3>Our Mission</h3>
+                <p>To provide exceptional pizza experiences that bring people together, using authentic recipes and the freshest ingredients available.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section content" id="testimonials">
+        <div class="section-header">
+            <h2>What Our Customers Say</h2>
+            <p>Hear from our satisfied customers</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <img src="https://picsum.photos/seed/customer1/100/100.jpg" alt="Customer 1" class="testimonial-avatar">
+                    <div>
+                        <h4>Sarah Johnson</h4>
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <p>"The Margherita pizza is absolutely delicious! Fresh ingredients and authentic taste. Will definitely order again!"</p>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <img src="https://picsum.photos/seed/customer2/100/100.jpg" alt="Customer 2" class="testimonial-avatar">
+                    <div>
+                        <h4>Michael Rodriguez</h4>
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+                <p>"The Pepperoni pizza is the best in town! Fast delivery and the crust is perfectly crispy. Highly recommend!"</p>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <img src="https://picsum.photos/seed/customer3/100/100.jpg" alt="Customer 3" class="testimonial-avatar">
+                    <div>
+                        <h4>Emily Chen</h4>
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <p>"I've tried many pizza places, but Pizza Paradise stands out! The Veggie pizza is amazing and the staff is super friendly."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section content" id="contact">
+        <div class="section-header">
+                    <h2>Contact Us</h2>
+                    <p>We'd love to hear from you</p>
+                </div>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h3>Get In Touch</h3>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>123 Pizza Street, Foodville, NY 10001</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>(555) 123-4567</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>info@pizzaparadise.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Mon-Sun: 11am - 10pm</span>
+                        </div>
+                    </div>
+            <div class="contact-form">
+                <h3>Send Us a Message</h3>
+                <form action="submit_message.php" method="POST">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" placeholder="Your Name" required style="width:100%;padding:8px;margin-bottom:10px;">
+                    </div>
+                    <div class="form-group"><label>Email:</label><br>
+                    <input type="email" placeholder="Your Email" name="email" required style="width:100%;padding:8px;margin-bottom:10px;"><br><br>
+                    </div>
+                    <div class="form-group"><label>Subject:</label><br>
+                    <input type="text" placeholder="Subject" name="subject" required style="width:100%;padding:8px;margin-bottom:10px;"><br><br>
+                    </div>
+
+                    <div class="form-group"><label>Message:</label><br>
+                    <textarea name="message" placeholder="Messages" rows="5" required style="width:100%;padding:8px;margin-bottom:10px;"></textarea><br><br>
+                    </div>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="location-section content" id="location">
+        <div class="section-header">
+            <h2>Our Location</h2>
+            <p>Find us easily</p>
+        </div>
+        <div class="location-content">
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5309476.423888566!2d8.9843337!3d23.4162027!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13a96f6ffb9cc1c3%3A0x3636a7db97e7d90a!2sSahara%20Desert!5e0!3m2!1sen!2smy!4v1721800000000!5m2!1sen!2smy"  width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <div class="location-details">
+                <h3>Directions</h3>
+                <p>We're located in the heart of Sahara Desert, just a short walk from Hell. There's plenty of cactus available and we're also accessible by public transportation.</p>
+                <div class="location-transport">
+                    <div class="transport-item">
+                        <i class="fas fa-bus"></i>
+                        <span>Bus: Routes 5, 6, 7 to Pizza Street</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hours Section -->
+    <section class="hours-section content" id="hours">
+        <div class="section-header">
+            <h2>Opening Hours</h2>
+            <p>When you can find us</p>
+        </div>
+        <div class="hours-content">
+            <div class="hours-grid">
+                <div class="day-hours">
+                    <div class="day">
+                        <span>Monday</span>
+                        <span>11:00 AM - 10:00 PM</span>
+                    </div>
+                    <div class="day">
+                        <span>Tuesday</span>
+                        <span>11:00 AM - 10:00 PM</span>
+                    </div>
+                    <div class="day">
+                        <span>Wednesday</span>
+                        <span>11:00 AM - 10:00 PM</span>
+                    </div>
+                    <div class="day">
+                        <span>Thursday</span>
+                        <span>11:00 AM - 10:00 PM</span>
+                    </div>
+                    <div class="day">
+                        <span>Friday</span>
+                        <span>11:00 AM - 11:00 PM</span>
+                    </div>
+                    <div class="day">
+                        <span>Saturday</span>
+                        <span>11:00 AM - 11:00 PM</span>
+                    </div>
+                    <div class="day">
+                        <span>Sunday</span>
+                        <span>11:00 AM - 10:00 PM</span>
+                    </div>
+                </div>
+                <div class="special-hours">
+                    <h3>Special Hours</h3>
+                    <div class="special-note">
+                        <i class="fas fa-info-circle"></i>
+                        <p>We're open on all holidays except Christmas Day and New Year's Day.</p>
+                    </div>
+                    <div class="special-note">
+                        <i class="fas fa-clock"></i>
+                        <p>Last call for orders is 30 minutes before closing time.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer content">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Pizza Paradise</h3>
+                <p>Serving fresh, delicious pizzas since 2010</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/pengchew.lim"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/cecilia_yi518/"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.instagram.com/oyz823/"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/ojs_edward/"><i class="fab fa-yelp"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#menu">Home</a></li>
+                    <li><a href="#menu">Menu</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#location">Location</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Pizza Street, Foodville, NY 10001</p>
+                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                <p><i class="fas fa-envelope"></i> info@pizzaparadise.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Pizza Paradise. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script src="app.js"></script>
+    </div>
+    <!-- Sign Up Section -->
+    <section id="signup" class="signup-section">
+        <div class="signup-container" style="max-width:400px;margin:0 auto 30px;">
+            <h2>Create an Account</h2>
+            <form action="signup.php" method="POST">
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="Username" required style="width:100%;padding:8px;margin-bottom:10px;">
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Email" required style="width:100%;padding:8px;margin-bottom:10px;">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" required style="width:100%;padding:8px;margin-bottom:10px;">
+                </div>
+                <button type="submit" class="submit-btn" style="width:100%;">Sign Up</button>
+                <button class="closeForm">Close</button>
+
+            </form>
+        </div>
+    </section>
+    <!-- Login Section -->
+    <section id="login" class="login-section">
+        <div class="login-container" style="max-width:400px;margin:0 auto 30px;">
+            <h2>Login to Your Account</h2>
+            <form action="login.php" method="POST">
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="Username" required style="width:100%;padding:8px;margin-bottom:10px;">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" required style="width:100%;padding:8px;margin-bottom:10px;">
+                </div>
+                <button type="submit" class="submit-btn" style="width:100%;">Login</button>
+                <button class="closeForm">Close</button>
+            </form>
+
+</body>
+</html>
